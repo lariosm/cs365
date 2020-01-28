@@ -36,12 +36,12 @@ void Shell::Execute(char *argv[], int number_of_commands, int read_pipe[2], int 
         // Close pipes.
 
         if(read_pipe != NULL) {
-
+            if (dup2 (read_pipe[READ], STDIN_FILENO) == -1) perror ("dup2");
         }
         if(write_pipe != NULL) {
-
+            if (dup2 (write_pipe[WRITE], STDOUT_FILENO) == -1) perror ("dup2");
         }
-        delete all_pipes
+        delete[] all_pipes;
 
         execvp(argv[0], argv);
         perror("execvp");
@@ -75,6 +75,7 @@ void Shell::ExecuteCommands(char *argvs[MAX_COMMANDS][MAX_ARGV], const size_t &n
     for (int i = 0; i < number_of_commands; i++) {
 
     }
+    delete[] all_pipes;
 }
 
 void Shell::GetLine(char *buffer, size_t size)
@@ -88,7 +89,7 @@ void Shell::WaitForAllCommands(const size_t &number_of_commands)
     // for i = 0 to number_of_commands
     //     call wait()
     for (int i = 0; i < number_of_commands; i++) {
-
+        
     }
 
 }
@@ -109,6 +110,7 @@ void Shell::ClosePipes(int all_pipes[][2], const size_t &number_of_commands)
     for (int i = 0; i < number_of_commands; i++) {
 
     }
+    delete[] all_pipes;
 }
 
 void Shell::Run()
