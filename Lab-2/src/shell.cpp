@@ -41,7 +41,8 @@ void Shell::Execute(char *argv[], int number_of_commands, int read_pipe[2], int 
         if(write_pipe != NULL) {
             if (dup2 (write_pipe[WRITE], STDOUT_FILENO) == -1) perror ("dup2");
         }
-        delete[] all_pipes;
+        if (close (read_pipe[READ]) == -1) perror ("close");
+        if (close (write_pipe[WRITE]) == -1) perror ("close");
 
         execvp(argv[0], argv);
         perror("execvp");
