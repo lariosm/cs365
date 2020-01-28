@@ -4,7 +4,7 @@ CC=g++
 CFLAGS= -Wall
 LDFLAGS=
 
-ifeq ($DEBUG), y)
+ifeq ($(DEBUG), 'y')
 	CFLAGS += -DDEBUG -g
 else
 	CFLAGS += -O2

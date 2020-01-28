@@ -1,6 +1,6 @@
 #include "shell.hpp"
 
-bool DEBUG = false;
+bool DEBUG = true;
 
 void DebugPrint(const char *message)
 {
@@ -29,20 +29,20 @@ void Shell::Execute(char *argv[], int number_of_commands, int read_pipe[2], int 
     case -1:
         ForkError();
     case 0:
-        // if read_pipe is not null
-        //     then duplicate read_pipe (e.g. dup2) for STDIN
-        // if write_pipe is not null
-        //     then duplicate write_pipe (e.g. dup2) for STDOUT
-        // Close pipes.
+        if(read_pipe != nullptr) {
+            if (dup2 (read_pipe[READ], STDIN_FILENO) < 0) {
+                perror("Error with dup2 in the read pipe");
+                exit(EXIT_FAILURE);
+            }
+        }
+        if(write_pipe != nullptr) {
+            if (dup2 (write_pipe[WRITE], STDOUT_FILENO) < 0) {
+                perror("Error with dup2 in the write pipe");
+                exit(EXIT_FAILURE);
+            }
+        }
 
-        if(read_pipe != NULL) {
-            if (dup2 (read_pipe[READ], STDIN_FILENO) == -1) perror ("dup2");
-        }
-        if(write_pipe != NULL) {
-            if (dup2 (write_pipe[WRITE], STDOUT_FILENO) == -1) perror ("dup2");
-        }
-        if (close (read_pipe[READ]) == -1) perror ("close");
-        if (close (write_pipe[WRITE]) == -1) perror ("close");
+        ClosePipes(all_pipes, number_of_commands);
 
         execvp(argv[0], argv);
         perror("execvp");
@@ -58,25 +58,22 @@ void Shell::Execute(char *argv[], int number_of_commands, int read_pipe[2], int 
 
 void Shell::ExecuteCommands(char *argvs[MAX_COMMANDS][MAX_ARGV], const size_t &number_of_commands, int all_pipes[][2])
 {
-    // 1. Cases to cover in a loop; for i = 0 to number_of_commands
-    // |-------------------------------------------------------------------
-    // |     COMMAND         |     READ PIPE        |    WRITE PIPE       |
-    // |-------------------------------------------------------------------
-    // | Only 1 command      |       null           |      null           |
-    // |-------------------------------------------------------------------
-    // | First command       |       null           |   current pipe      |
-    // |-------------------------------------------------------------------
-    // | Last command        |     previous pipe    |      null           |
-    // |-------------------------------------------------------------------
-    // | Middle command      |     previous pipe    |   current pipe      |
-    // --------------------------------------------------------------------
-
-    // 2. Close pipes.
-
-    for (int i = 0; i < number_of_commands; i++) {
-
+    for (size_t i = 0; i < number_of_commands; ++i) {
+        if(number_of_commands == 1) {
+            Execute(argvs[i], number_of_commands, nullptr, nullptr, all_pipes);
+        }
+        else if(i == number_of_commands - 1) {
+            Execute(argvs[i], number_of_commands, all_pipes[i - 1], nullptr, all_pipes);
+        }
+        else if(i == 0) {
+            Execute(argvs[i], number_of_commands, nullptr, all_pipes[i], all_pipes);
+        }
+        else {
+            Execute(argvs[i], number_of_commands, all_pipes[i - 1], all_pipes[i], all_pipes);
+        }
     }
-    delete[] all_pipes;
+
+    ClosePipes(all_pipes, number_of_commands);
 }
 
 void Shell::GetLine(char *buffer, size_t size)
@@ -87,31 +84,35 @@ void Shell::GetLine(char *buffer, size_t size)
 
 void Shell::WaitForAllCommands(const size_t &number_of_commands)
 {
-    // for i = 0 to number_of_commands
-    //     call wait()
-    for (int i = 0; i < number_of_commands; i++) {
-        
+    for (size_t i = 0; i < number_of_commands; i++) {
+        int status;
+        wait(&status);
     }
 
 }
 
 void Shell::InitializePipes(int all_pipes[][2], const size_t &number_of_commands)
 {
-    // for i = 0 to number_of_commands
-    //     init all_pipes[i]
-    for (int i = 0; i < number_of_commands; i++) {
-
+    for (size_t i = 0; i < number_of_commands; i++) {
+        if(pipe(all_pipes[i]) < 0) {
+            perror("init pipes failed");
+            exit(0);
+        }
     }
 }
 
 void Shell::ClosePipes(int all_pipes[][2], const size_t &number_of_commands)
 {
-    // for i = 0 to number_of_commands
-    //     close read and write ends for pipes
-    for (int i = 0; i < number_of_commands; i++) {
-
+    for (size_t i = 0; i < number_of_commands; i++) {
+        if(close(all_pipes[i][READ]) < 0) {
+            perror("Error closing pipes");
+            exit(0);
+        }
+        if(close(all_pipes[i][WRITE]) < 0) {
+            perror("Error closing pipes");
+            exit(0);
+        }
     }
-    delete[] all_pipes;
 }
 
 void Shell::Run()
