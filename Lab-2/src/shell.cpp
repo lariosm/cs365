@@ -35,6 +35,14 @@ void Shell::Execute(char *argv[], int number_of_commands, int read_pipe[2], int 
         //     then duplicate write_pipe (e.g. dup2) for STDOUT
         // Close pipes.
 
+        if(read_pipe != NULL) {
+
+        }
+        if(write_pipe != NULL) {
+
+        }
+        delete all_pipes
+
         execvp(argv[0], argv);
         perror("execvp");
         exit(EXIT_FAILURE);
@@ -63,6 +71,10 @@ void Shell::ExecuteCommands(char *argvs[MAX_COMMANDS][MAX_ARGV], const size_t &n
     // --------------------------------------------------------------------
 
     // 2. Close pipes.
+
+    for (int i = 0; i < number_of_commands; i++) {
+
+    }
 }
 
 void Shell::GetLine(char *buffer, size_t size)
@@ -75,6 +87,9 @@ void Shell::WaitForAllCommands(const size_t &number_of_commands)
 {
     // for i = 0 to number_of_commands
     //     call wait()
+    for (int i = 0; i < number_of_commands; i++) {
+
+    }
 
 }
 
@@ -82,12 +97,18 @@ void Shell::InitializePipes(int all_pipes[][2], const size_t &number_of_commands
 {
     // for i = 0 to number_of_commands
     //     init all_pipes[i]
+    for (int i = 0; i < number_of_commands; i++) {
+
+    }
 }
 
 void Shell::ClosePipes(int all_pipes[][2], const size_t &number_of_commands)
 {
     // for i = 0 to number_of_commands
     //     close read and write ends for pipes
+    for (int i = 0; i < number_of_commands; i++) {
+
+    }
 }
 
 void Shell::Run()
