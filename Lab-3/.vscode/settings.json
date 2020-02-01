@@ -1,0 +1,5 @@
+{
+    "python.pythonPath": "/home/manuel/.local/share/virtualenvs/Lab-3-YEIh-FB3/bin/python",
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true
+}
