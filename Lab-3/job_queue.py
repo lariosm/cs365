@@ -12,7 +12,10 @@ class Queue:
         return self.queue.popleft()
 
     def peek(self):
-        return self.queue[-1]
+        return self.queue[0]
+
+    def peek_next(self):
+        return self.queue[1]
 
     def is_empty(self):
         return len(self.queue) == 0
