@@ -1,29 +1,32 @@
+from job_queue import *
 import random
 
-job_list = []
+
+CHANCE_OF_IO_REQUEST = 10
+CHANCE_OF_IO_COMPLETE = 4
 
 
 def read_jobs():
     with open('scheduling_data.txt') as file:
-        # pid, arrival_time, service_time, priority
-        job_list = list(map(str, file.read().replace(":", "").split()))
+        # pid, arrival_time, burst_time, priority
+        return list(map(int, file.read().replace(":", "").split()))
 
 
-def io_request(change_of_io_request):
-    if random.random() % change_of_io_request == 0:
-        return 1
-    else:
-        return 0
+def io_request():
+    return random.random() % CHANCE_OF_IO_REQUEST == 0
 
 
-def io_complete(change_of_io_complete):
-    if random.random() % change_of_io_complete == 0:
-        return 1
-    else:
-        return 0
+def io_complete():
+    return random.random() % CHANCE_OF_IO_COMPLETE == 0
 
 
-clock = 0
-rand_val = random.random()
+def run_coordinator():
+    clock = 0
+    random_seed = random.seed(None)
+
+
+if __name__ == '__main__':
+    # run_coordinator()
+    print("Hello world")
 
 # Unfinished as of this commit
