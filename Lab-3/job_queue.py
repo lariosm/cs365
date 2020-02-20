@@ -6,7 +6,6 @@ class Queue:
         self.queue = deque()
 
     def enqueue(self, item):
-        item.state = item
         self.queue.append(item)
 
     def dequeue(self):
