@@ -1,4 +1,4 @@
-from job_queue import *
+from job_queue import Queue
 from interfaces import Job
 import random
 
