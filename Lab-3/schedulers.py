@@ -37,7 +37,7 @@ class NonAgressivePreemptiveScheduler:
 
     def has_jobs(self):
         # Our last "line of defense" in deciding if there are jobs left
-        self.queues.queue_seven.is_empty()
+        return self.queues.queue_seven.is_empty()
 
     def peek_next(self):
         pass
