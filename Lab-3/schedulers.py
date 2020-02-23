@@ -22,6 +22,7 @@ class NonAgressivePreemptiveScheduler:
             if not current_queue.is_empty():
                 job = current_queue.dequeue()
                 job.priority = 0  # Marks current job with priority 0
+                job.state = "running"
 
                 # Assigns a number of quanta to the job
                 if i == 0:
@@ -30,7 +31,7 @@ class NonAgressivePreemptiveScheduler:
                     job.quanta_remaining = 2 * i
                 return job
 
-        return False
+        return None
 
     def reschedule(self):
         pass

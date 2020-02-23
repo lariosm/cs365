@@ -20,6 +20,9 @@ class Queue:
     def is_empty(self):
         return len(self.queue) == 0
 
+    def size(self):
+        return len(self.queue)
+
 
 class PriorityQueue:
     def __init__(self, queue):
@@ -32,42 +35,43 @@ class PriorityQueue:
         self.queue_six = Queue()
         self.queue_seven = Queue()
 
-        for i in range(len(queue)):
+
+        for i in range(queue.size()):
             current_job = queue.peek(i)
             if current_job.priority == 0:
                 self.queue_zero.enqueue(current_job)
-
-        for i in range(len(queue)):
+        
+        for i in range(queue.size()):
             current_job = queue.peek(i)
             if current_job.priority == 1:
                 self.queue_one.enqueue(current_job)
 
-        for i in range(len(queue)):
+        for i in range(queue.size()):
             current_job = queue.peek(i)
             if current_job.priority == 2:
                 self.queue_two.enqueue(current_job)
 
-        for i in range(len(queue)):
+        for i in range(queue.size()):
             current_job = queue.peek(i)
             if current_job.priority == 3:
                 self.queue_three.enqueue(current_job)
 
-        for i in range(len(queue)):
+        for i in range(queue.size()):
             current_job = queue.peek(i)
             if current_job.priority == 4:
                 self.queue_four.enqueue(current_job)
 
-        for i in range(len(queue)):
+        for i in range(queue.size()):
             current_job = queue.peek(i)
             if current_job.priority == 5:
                 self.queue_five.enqueue(current_job)
 
-        for i in range(len(queue)):
+        for i in range(queue.size()):
             current_job = queue.peek(i)
             if current_job.priority == 6:
                 self.queue_six.enqueue(current_job)
 
-        for i in range(len(queue)):
+        for i in range(queue.size()):
             current_job = queue.peek(i)
             if current_job.priority == 7:
                 self.queue_seven.enqueue(current_job)
