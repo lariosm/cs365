@@ -3,13 +3,16 @@ from collections import deque
 
 class Queue:
     def __init__(self):
-        self.queue = deque()
+        self.queue = deque()  # Initializes deque object
 
     def enqueue(self, item):
         self.queue.append(item)
 
     def dequeue(self):
         return self.queue.popleft()
+
+    def delete(self, at_index):
+        del self.queue[at_index]
 
     def peek(self, peek_to=0):
         return self.queue[peek_to]
@@ -23,9 +26,12 @@ class Queue:
     def size(self):
         return len(self.queue)
 
+    def clear(self):
+        self.queue.clear()
+
 
 class PriorityQueue:
-    def __init__(self, queue):
+    def __init__(self):
         self.queue_zero = Queue()
         self.queue_one = Queue()
         self.queue_two = Queue()
@@ -34,48 +40,3 @@ class PriorityQueue:
         self.queue_five = Queue()
         self.queue_six = Queue()
         self.queue_seven = Queue()
-
-
-        for i in range(queue.size()):
-            current_job = queue.peek(i)
-            if current_job.priority == 0:
-                self.queue_zero.enqueue(current_job)
-        
-        for i in range(queue.size()):
-            current_job = queue.peek(i)
-            if current_job.priority == 1:
-                self.queue_one.enqueue(current_job)
-
-        for i in range(queue.size()):
-            current_job = queue.peek(i)
-            if current_job.priority == 2:
-                self.queue_two.enqueue(current_job)
-
-        for i in range(queue.size()):
-            current_job = queue.peek(i)
-            if current_job.priority == 3:
-                self.queue_three.enqueue(current_job)
-
-        for i in range(queue.size()):
-            current_job = queue.peek(i)
-            if current_job.priority == 4:
-                self.queue_four.enqueue(current_job)
-
-        for i in range(queue.size()):
-            current_job = queue.peek(i)
-            if current_job.priority == 5:
-                self.queue_five.enqueue(current_job)
-
-        for i in range(queue.size()):
-            current_job = queue.peek(i)
-            if current_job.priority == 6:
-                self.queue_six.enqueue(current_job)
-
-        for i in range(queue.size()):
-            current_job = queue.peek(i)
-            if current_job.priority == 7:
-                self.queue_seven.enqueue(current_job)
-
-        # Empty out the original queue
-        while not queue.is_empty():
-            queue.dequeue()
