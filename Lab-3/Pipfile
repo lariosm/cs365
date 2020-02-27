@@ -8,6 +8,7 @@ flake8 = "*"
 pytest = "*"
 
 [packages]
+prettytable = "*"
 
 [requires]
 python_version = "3.7"

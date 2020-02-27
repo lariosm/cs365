@@ -12,7 +12,7 @@ class Queue:
         return self.queue.popleft()
 
     def delete(self, at_index):
-        del self.queue[at_index]
+        self.queue.__delitem__(at_index)
 
     def peek(self, peek_to=0):
         return self.queue[peek_to]

@@ -65,16 +65,17 @@ class NonAggressivePreemptiveScheduler:
     # Adds jobs to their respective priority queues by arrival time
     def add_jobs(self, jobs_queue, clock):
         # Holds jobs to delete from job_queue, so as not to
-        # mess with code in line 71
+        # mess with code in line 70
         jobs_to_delete = []
         for i in range(len(self.switcher)):
             for j in range(jobs_queue.size()):
                 current_job = jobs_queue.peek(j)
                 if current_job.priority == i and current_job.arrival_time == clock:
                     self.switcher.get(i).enqueue(current_job)
-                    jobs_to_delete.append(i)
+                    jobs_to_delete.append(j)
 
         # Next, we delete jobs from jobs_queue
+        jobs_to_delete.sort(reverse=True)
         for i in jobs_to_delete:
             jobs_queue.delete(i)
 
@@ -84,6 +85,16 @@ class NonAggressivePreemptiveScheduler:
             # Checks if current priority queue (i.e. queue_three) is empty
             if not self.switcher.get(i).is_empty():
                 # Is the current job's priority higher than the priority queue
-                if current_job.priority < i:
+                if i < current_job.priority:
                     return True
         return False
+
+    def update_ready_time(self, jobs_queue):
+        # Updates ready time in each job in original job queue
+        for i in range(jobs_queue.size()):
+            jobs_queue.peek(i).total_time_in_ready_state += 1
+
+        # Updates ready time in each job in priority queues
+        for i in range(len(self.switcher)):
+            for j in range(self.switcher.get(i).size()):
+                self.switcher.get(i).peek(j).total_time_in_ready_state += 1

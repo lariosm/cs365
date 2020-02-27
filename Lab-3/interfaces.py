@@ -6,7 +6,9 @@ class Job:
         self.priority = None
         self.prev_priority = None
         self.quanta_remaining = None
-        self.total_time_in_io_state = None
+        self.total_time_in_io_state = 0
+        self.total_time_in_ready_state = 0
+        self.total_time_in_system = 0
         self.state = "new"
         self.io_block = False
         self.swapped_out = False
