@@ -1,8 +1,9 @@
 from job_queue import Queue
 from interfaces import Job
-from schedulers import NonAggressivePreemptiveScheduler
+from schedulers import NonAggressivePreemptiveScheduler, AggressivePreemptiveScheduler
 from prettytable import PrettyTable
 import random
+import sys
 
 
 CHANCE_OF_IO_REQUEST = 10
@@ -23,7 +24,7 @@ def io_complete():
     return round(random.random() * 100000) % CHANCE_OF_IO_COMPLETE == 0
 
 
-def run_coordinator():
+def run_coordinator(schedule_type=NonAggressivePreemptiveScheduler()):
     clock = 0
     job_list = read_jobs()  # Holds a list of read-in job data
     queue = Queue()  # Holds jobs
@@ -39,7 +40,7 @@ def run_coordinator():
         job.state = "ready"
         queue.enqueue(job)
 
-    scheduler = NonAggressivePreemptiveScheduler()
+    scheduler = schedule_type
 
     # Makes initial call to add jobs to the scheduler
     scheduler.add_jobs(queue, clock)
@@ -70,7 +71,7 @@ def run_coordinator():
                         jobs_to_delete.append(i)
 
                 # Next, we delete jobs from io_wait_queue
-                jobs_to_delete.sort(reverse=True)
+                jobs_to_delete.sort(reverse=True)  # Helps delete without issue
                 for i in jobs_to_delete:
                     io_wait_queue.delete(i)
 
@@ -86,7 +87,8 @@ def run_coordinator():
                 if current_job.io_block:  # Do we need to do I/O for this job?
                     current_job.swapped_out = True
                     current_job.state = "sleeping"
-                elif current_job.quanta_remaining == 1:  # Has this job been on the CPU for an entire timeslice?
+                # Has this job been on the CPU for an entire timeslice?
+                elif current_job.quanta_remaining == 1:
                     current_job.swapped_out = True
                     current_job.state = "end_of_time_slice"
 
@@ -142,4 +144,29 @@ def print_stats(jobs, total_time):
 
 
 if __name__ == '__main__':
-    run_coordinator()
+    if len(sys.argv) == 1:
+        run_coordinator(NonAggressivePreemptiveScheduler())
+    elif sys.argv[1] == "-A":
+        print("Running multi-level aggressive scheduling")
+        print("NOTE: At present, this scheduler is half working, following "
+              "only rule (2)'")
+        print()
+        run_coordinator(AggressivePreemptiveScheduler())
+    elif sys.argv[1] == "-N":
+        print("Running multi-level non-aggressive scheduling (default)")
+        print()
+        run_coordinator(NonAggressivePreemptiveScheduler())
+    elif sys.argv[1] == "-S":
+        print("Running preemptive shortest job first (PSJF) scheduling")
+        print("NOTE: At present, this scheduler type has yet to be implemented")
+        print("Exiting...")
+        sys.exit(0)
+    elif sys.argv[1] == "-h":
+        print("options:")
+        print("\t-A   Runs multi-level aggressive scheduler")
+        print("\t-N   Runs multi-level non-aggressive scheduler (default)")
+        print("\t-S   Runs preemptive shortest job first scheduler")
+    else:
+        print("invalid argument")
+        print("Type -h for help")
+        print()

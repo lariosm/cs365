@@ -98,3 +98,35 @@ class NonAggressivePreemptiveScheduler:
         for i in range(len(self.switcher)):
             for j in range(self.switcher.get(i).size()):
                 self.switcher.get(i).peek(j).total_time_in_ready_state += 1
+
+
+# NOTE: This class inherits from class NonAggressivePreemptiveScheduler
+class AggressivePreemptiveScheduler(NonAggressivePreemptiveScheduler):
+    def reschedule(self, job):
+        if job.state == "sleeping":
+            if job.prev_priority == 0:
+                job.priority = 0
+            else:
+                job.priority = job.prev_priority - 1
+            job.prev_priority = None  # Sets previous job priority to null
+            job.state = "ready"
+            job.swapped_out = False
+            self.switcher.get(job.priority).enqueue(job)
+        if job.state == "preempted":
+            job.state = "ready"
+            job.swapped_out = False
+            job.prev_priority = None  # Sets previous job priority to null
+            self.queues.queue_zero.enqueue(job)
+        elif job.state == "end_of_time_slice":
+            if job.prev_priority == 7:
+                job.priority = 7
+                job.prev_priority = None  # Sets previous job priority to null
+                job.state = "ready"
+                job.swapped_out = False
+                self.queues.queue_seven.enqueue(job)
+            else:
+                job.priority = job.prev_priority + 1  # Lowers job's priority
+                job.prev_priority = None  # Sets previous job priority to null
+                job.state = "ready"
+                job.swapped_out = False
+                self.switcher.get(job.priority).enqueue(job)
