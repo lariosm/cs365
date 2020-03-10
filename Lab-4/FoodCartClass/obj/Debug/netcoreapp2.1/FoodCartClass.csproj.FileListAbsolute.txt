@@ -1,0 +1,11 @@
+C:\cs365-labs-lariosm\Lab-4\FoodCartClass\bin\Debug\netcoreapp2.1\FoodCartClass.deps.json
+C:\cs365-labs-lariosm\Lab-4\FoodCartClass\bin\Debug\netcoreapp2.1\FoodCartClass.runtimeconfig.json
+C:\cs365-labs-lariosm\Lab-4\FoodCartClass\bin\Debug\netcoreapp2.1\FoodCartClass.runtimeconfig.dev.json
+C:\cs365-labs-lariosm\Lab-4\FoodCartClass\bin\Debug\netcoreapp2.1\FoodCartClass.dll
+C:\cs365-labs-lariosm\Lab-4\FoodCartClass\bin\Debug\netcoreapp2.1\FoodCartClass.pdb
+C:\cs365-labs-lariosm\Lab-4\FoodCartClass\obj\Debug\netcoreapp2.1\FoodCartClass.csprojAssemblyReference.cache
+C:\cs365-labs-lariosm\Lab-4\FoodCartClass\obj\Debug\netcoreapp2.1\FoodCartClass.csproj.CoreCompileInputs.cache
+C:\cs365-labs-lariosm\Lab-4\FoodCartClass\obj\Debug\netcoreapp2.1\FoodCartClass.AssemblyInfoInputs.cache
+C:\cs365-labs-lariosm\Lab-4\FoodCartClass\obj\Debug\netcoreapp2.1\FoodCartClass.AssemblyInfo.cs
+C:\cs365-labs-lariosm\Lab-4\FoodCartClass\obj\Debug\netcoreapp2.1\FoodCartClass.dll
+C:\cs365-labs-lariosm\Lab-4\FoodCartClass\obj\Debug\netcoreapp2.1\FoodCartClass.pdb
