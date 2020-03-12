@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 
@@ -26,7 +27,7 @@ namespace FoodCartClass
         private int _simulationTime;
         private int _customerNumber = 0;
         private double _totalWaitingTime = 0.0;
-        private Stopwatch _stopwatch = Stopwatch.StartNew();
+        private readonly Stopwatch _stopwatch = Stopwatch.StartNew();
 
         private readonly Mutex _customerNumberMutex = new Mutex();
         private readonly Mutex _totalWaitingTimeMutex = new Mutex();
@@ -47,8 +48,7 @@ namespace FoodCartClass
 
         private void CreateCustomerProcesses()
         {
-            var customers = new BlockingCollection<Thread>();
-
+            var customers = new List<Thread>();
             do
             {
                 Thread.Sleep(_meanTimeBetweenCustomers * 1000);
@@ -56,16 +56,16 @@ namespace FoodCartClass
                 customer.Start();
                 customers.Add(customer);
             }
-            while (_simulationTime > _stopwatch.ElapsedMilliseconds / 1000);
+            while (_simulationTime > _stopwatch.ElapsedMilliseconds / 1000.00);
 
 
             for (var i = 0; i < customers.Count; ++i)
             {
-                if (customers.TryTake(out var customer))
-                {
-                    customer.Join();
-                }
+                customers[i].Join();
             }
+
+            Console.WriteLine($"Number of customers served: {_customerNumber}");
+            Console.WriteLine($"Average wait time: {_totalWaitingTime / _customerNumber}");
         }
 
         private void CustomerProcess(object id)
@@ -78,28 +78,28 @@ namespace FoodCartClass
             var customerNumber = ++_customerNumber;
             _customerNumberMutex.ReleaseMutex();
 
-            Console.WriteLine($"At {_stopwatch.ElapsedMilliseconds / 1000} - customer #{_customerNumber} walked up.");
+            Console.WriteLine($"At {_stopwatch.ElapsedMilliseconds / 1000} - customer #{customerNumber} walked up.");
 
             // Wait for a worker to become available
             _workers.WaitOne();
             // Calculate average waiting time
-            var waitTime = customerStopwatch.ElapsedMilliseconds / 1000;
+            var waitTime = customerStopwatch.ElapsedMilliseconds / 1000.00;
 
-            // Update the avaerage wait time
+            // Update the average wait time
             _totalWaitingTimeMutex.WaitOne();
             _totalWaitingTime += waitTime;
             _totalWaitingTimeMutex.ReleaseMutex();
 
-            Console.WriteLine($"At {_stopwatch.ElapsedMilliseconds / 1000} - customer #{_customerNumber} is starting to get served.");
+            Console.WriteLine($"At {_stopwatch.ElapsedMilliseconds / 1000} - customer #{customerNumber} is starting to get served.");
 
             // Customer gets served
-            Thread.Sleep(_meanServingTime * 100);
+            Thread.Sleep(_meanServingTime * 1000);
 
-            Console.WriteLine($"At {_stopwatch.ElapsedMilliseconds / 1000} - customer #{_customerNumber} has been served.");
+            Console.WriteLine($"At {_stopwatch.ElapsedMilliseconds / 1000} - customer #{customerNumber} has been served.");
 
             _workers.Release();
 
-            Console.WriteLine($"At {_stopwatch.ElapsedMilliseconds / 1000} - customer #{_customerNumber} has left.");
+            Console.WriteLine($"At {_stopwatch.ElapsedMilliseconds / 1000} - customer #{customerNumber} has left.");
         }
     }
 }
